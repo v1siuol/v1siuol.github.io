@@ -284,7 +284,7 @@
     <header class="post-header">
       <div class="post-meta-container">
         <time itemprop="dateCreated"
-              datetime="2020-09-29T19:25:02+00:00"
+              datetime="2020-09-29T23:45:29+00:00"
               content="2020-09-29">
           09-29
         </time>
@@ -441,7 +441,7 @@ document.addEventListener('pjax:success', () => {
   <script>
     firebase.initializeApp({
       apiKey   : 'AIzaSyDA2yncVyD3svhxIUUXmh887aaIT_r9dlE',
-      projectId: '1072317735203'
+      projectId: 'v1siuol'
     });
 
     function getCount(doc, increaseCount) {
@@ -479,10 +479,10 @@ document.addEventListener('pjax:success', () => {
   <script data-pjax>
     (function() {
       const db = firebase.firestore();
-      const articles = db.collection('articles');
+      const articles = db.collection('v1siuol.com');
 
       if (CONFIG.page.isPost) { // Is article page
-        const title = document.querySelector('.post-title').innerText.trim();
+        const title = document.querySelector('.post-title').textContent.trim();
         const doc = articles.doc(title);
         let increaseCount = CONFIG.hostname === location.hostname;
         if (localStorage.getItem(title)) {
@@ -494,7 +494,7 @@ document.addEventListener('pjax:success', () => {
         getCount(doc, increaseCount).then(appendCountTo(document.querySelector('.firestore-visitors-count')));
       } else if (CONFIG.page.isHome) { // Is index page
         const promises = [...document.querySelectorAll('.post-title')].map(element => {
-          const title = element.innerText.trim();
+          const title = element.textContent.trim();
           const doc = articles.doc(title);
           return getCount(doc);
         });
