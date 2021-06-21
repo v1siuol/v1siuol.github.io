@@ -1,3 +1,6 @@
 [submodule "themes/next"]
 	path = themes/next
 	url = git@github.com:v1siuol/hexo-theme-next.git
+[submodule "source/lib/pdf"]
+	path = source/lib/pdf
+	url = git@github.com:v1siuol/theme-next-pdf.git
