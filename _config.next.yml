@@ -801,8 +801,8 @@ tabs:
 # Dependencies: https://github.com/next-theme/theme-next-pdf
 pdf:
   enable: true
-  # Default height
-  height: 500px
+  # Default height 500px
+  height: 768px
 
 # Mermaid tag
 mermaid:
@@ -819,7 +819,7 @@ mermaid:
 # For more information: https://animate.style
 motion:
   enable: true
-  async: false
+  async: true
   transition:
     # All available transition variants: https://theme-next.js.org/animate/
     post_block: fadeIn

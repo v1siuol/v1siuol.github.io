@@ -31,6 +31,7 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
   - "README.md"
+  - "lib/**/*"  # Will output any file and subfolder in `source/lib/` without altering them.
 
 # Writing
 new_post_name: :title.md # File name of new posts
