@@ -1,3 +1,4 @@
+# This workflow is to build the hexo and deploy to website.
 name: Pages
 
 on:
