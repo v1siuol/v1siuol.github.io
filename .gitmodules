@@ -4,3 +4,6 @@
 [submodule "source/lib/pdf"]
 	path = source/lib/pdf
 	url = git@github.com:v1siuol/theme-next-pdf.git
+[submodule "source/lib/live2d-widget"]
+	path = source/lib/live2d-widget
+	url = git@github.com:v1siuol/live2d-widget.git
