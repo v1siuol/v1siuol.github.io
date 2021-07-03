@@ -55,7 +55,6 @@ favicon:
   apple_touch_icon: /images/apple-touch-icon.png
   safari_pinned_tab: /images/logo.svg
   android_manifest: /images/site.webmanifest
-  ms_browserconfig: /images/browserconfig.xml
 
 # Custom Logo (Warning: Do not support scheme Mist)
 custom_logo: /images/v1siuol_logo.png
