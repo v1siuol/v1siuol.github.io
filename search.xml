@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvLw==">Hexo<i class="fa fa-external-link-alt"></i></span>! This is your very first post. Check <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mv">documentation<i class="fa fa-external-link-alt"></i></span> for more info. If you get any problems when using Hexo, you can find the answer in <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvdHJvdWJsZXNob290aW5nLmh0bWw=">troubleshooting<i class="fa fa-external-link-alt"></i></span> or you can ask me on <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hleG9qcy9oZXhvL2lzc3Vlcw==">GitHub<i class="fa fa-external-link-alt"></i></span>.</p>
-<h2 id="Quick-Start">Quick Start</h2>
-<h3 id="Create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvd3JpdGluZy5odG1s">Writing<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="Run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvc2VydmVyLmh0bWw=">Server<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="Generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvZ2VuZXJhdGluZy5odG1s">Generating<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="Deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvb25lLWNvbW1hbmQtZGVwbG95bWVudC5odG1s">Deployment<i class="fa fa-external-link-alt"></i></span></p>
+    <title>《摆 烂》</title>
+    <url>/%E3%80%8A%E6%91%86-%E7%83%82%E3%80%8B/</url>
+    <content><![CDATA[<p>「正经人谁写<s>日记</s>博客啊」</p>
+<img src="/《摆-烂》/wind_knight-i7bt5FNYcNI-unsplash.jpg" width="50%" height="50%">
+<p>早在四五年前，我便创了一个微信公众号。可惜，直到目前，还只是用来预览测试过。也起草过些许零零散散的短文，无奈羞涩，一直被我埋藏在深深的角落里。</p>
+<p>也是有一段时间没写过文章了。打小的时候开始，我的语文便不太好，腹中的知识也早已一一归还，文笔不好，还请见谅。开篇即摆烂，但其实内心还是希望能好好坚持下去，多读读，多想想，多写写，会好起来的吧。</p>
+<p>话说回来，如今已是盛夏，只可惜暑假已不再属于我了。闲暇之际，还是会很想念那年的夏天。无忧，无虑，很是美好。</p>
+<span id="more"></span>
+<img src="/《摆-烂》/league_of_legends_Moo_Cow_Alistar_giphy_min.gif" width="50%" height="50%">
+<p>说一说 v1siuol 这个名字吧，这是我众多马甲中的一个。姑且称作小 v，憧憬着会有那么一天长大成 v 神。其实这名字反过来看就比较好理解了：louis1v。louis 即我的英文名，1v 则是我姓的中文拼音。</p>
+<p>没有什么出众的奖项，也没有什么出彩的项目，说到底只不过是个平平无奇小废物。他们都说「未来可期」，是啊，近期的目标是在平台上找到自己感兴趣的项目，给开源社区贡献一份微小的力量吧。</p>
+<img src="/《摆-烂》/zino-scheers-CAf3ld_LLz8-unsplash.jpg" width="50%" height="50%">
+<p>再谈谈博客吧。转眼间这已经是我第三版的博客了。</p>
+<p>第一版是 Python Flask 加 Jinja2 模板直接使用服务器渲染的，那时候是仿照动物书《Flask Web Development》中的例子做成的。当时上学时主要用 Python，正好 Python 中比较有名的网络框架有 Django，Flask 等。考虑到 Flask 的轻量以及可扩展性吧，我也刚好选择了这本书，并从中受益良多。这本书循序渐进，层层深入，又不忘工程中的可测试性，安全性。该书给予了当时的我很多思考与启发。再到后来部署时，我采用了 uWSGI 及 NGINX 的方案。到此为止，第一版博客诞生了。</p>
+<p>不知是哪一天，我在网上冲浪的时候发现了一个很好看的网站，改版的种子就埋在了我的心里。那时流行 Angular，React，Vue 三大前端框架，我从中选择了 React 做前端，并延续 Flask 做后端 API。经过了一系列的更新迭代，第二版博客于 2019 年暑假正式上线。</p>
+<p>可惜的是，Flask 伴随着各类 package 的加入，它从开箱即用，到一定程度上的臃肿，这套方案也渐渐的走下了历史的舞台。如今第三版，使用的 GitHub Pages + Hexo 配合 NexT 主题的方案。不出意外的话，这也是将来很长一段时间内使用的一个方案了，因为它基本达到了我对博客的各式需求。再加上魔改的存在，使得你能更加自由的注入灵魂。以后这里主要用来做技术分享以及日常摆烂的杂记啦，敬请期待。</p>
+<p>今天也是中国共产党迎来百年华诞之际。愿祖国繁荣昌盛，国泰民安！</p>
+<p>二零二一年七月一日，v1siuol 写于 Norwalk，CT</p>
 ]]></content>
+      <categories>
+        <category>杂文</category>
+      </categories>
+      <tags>
+        <tag>中文</tag>
+      </tags>
   </entry>
 </search>
