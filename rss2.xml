@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>v1siuol</title>
+    <link>https://v1siuol.com/</link>
+    
+    <image>
+      <url>https://v1siuol.com/icon.png</url>
+      <title>v1siuol</title>
+      <link>https://v1siuol.com/</link>
+    </image>
+    
+    <atom:link href="https://v1siuol.com/rss2.xml" rel="self" type="application/rss+xml"/>
+    
+    <description>v1siuol&#39;s Blog</description>
+    <pubDate>Sun, 04 Jul 2021 00:46:17 GMT</pubDate>
+    <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>《摆 烂》</title>
+      <link>https://v1siuol.com/%E3%80%8A%E6%91%86-%E7%83%82%E3%80%8B/</link>
+      <guid>https://v1siuol.com/%E3%80%8A%E6%91%86-%E7%83%82%E3%80%8B/</guid>
+      <pubDate>Thu, 01 Jul 2021 00:00:00 GMT</pubDate>
+      
+      <description>&lt;p&gt;「正经人谁写&lt;s&gt;日记&lt;/s&gt;博客啊」&lt;/p&gt;
+&lt;img src=&quot;/《摆-烂》/wind_knight-i7bt5FNYcNI-unsplash.jpg&quot; width=&quot;50%&quot; height=&quot;50%&quot;&gt;
+&lt;p&gt;早在四五年前，我便创了一个微信公众号。可惜，直到目前，还只是用来预览测试过。也起草过些许零零散散的短文，无奈羞涩，一直被我埋藏在深深的角落里。&lt;/p&gt;
+&lt;p&gt;也是有一段时间没写过文章了。打小的时候开始，我的语文便不太好，腹中的知识也早已一一归还，文笔不好，还请见谅。开篇即摆烂，但其实内心还是希望能好好坚持下去，多读读，多想想，多写写，会好起来的吧。&lt;/p&gt;
+&lt;p&gt;话说回来，如今已是盛夏，只可惜暑假已不再属于我了。闲暇之际，还是会很想念那年的夏天。无忧，无虑，很是美好。&lt;/p&gt;</description>
+      
+      
+      
+      
+      <category domain="https://v1siuol.com/categories/%E6%9D%82%E6%96%87/">杂文</category>
+      
+      
+      <category domain="https://v1siuol.com/tags/%E4%B8%AD%E6%96%87/">中文</category>
+      
+      
+      <comments>https://v1siuol.com/%E3%80%8A%E6%91%86-%E7%83%82%E3%80%8B/#disqus_thread</comments>
+      
+    </item>
+    
+  </channel>
+</rss>
