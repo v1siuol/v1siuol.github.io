@@ -153,6 +153,7 @@ social:
   #YouTube: https://youtube.com/yourname || fab fa-youtube
   #Instagram: https://instagram.com/yourname || fab fa-instagram
   #Skype: skype:yourname?call|chat || fab fa-skype
+  RSS: https://v1siuol.com/rss2.xml || fas fa-rss
 
 social_icons:
   enable: true
