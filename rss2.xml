@@ -15,7 +15,7 @@
     <atom:link href="https://v1siuol.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description></description>
-    <pubDate>Tue, 13 Jul 2021 01:22:58 GMT</pubDate>
+    <pubDate>Tue, 03 Aug 2021 23:58:04 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
@@ -40,6 +40,32 @@
       
       
       <comments>https://v1siuol.com/%E3%80%8A%E6%91%86-%E7%83%82%E3%80%8B/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>Flask Traditional Deployments: Zero to One &amp;lt;Setup a VPS&amp;gt;</title>
+      <link>https://v1siuol.com/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/</link>
+      <guid>https://v1siuol.com/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/</guid>
+      <pubDate>Fri, 02 Aug 2019 00:00:00 GMT</pubDate>
+      
+      <description>&lt;img src=&quot;/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/Flask_Traditional_Deployments_Zero_to_One_Setup_a_VPS_avatar.png&quot;&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The following article will introduce how to set up a &lt;strong&gt;virtual private server&lt;/strong&gt;, and some basic &lt;strong&gt;Linux&lt;/strong&gt; commands.&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+      
+      
+      
+      
+      <category domain="https://v1siuol.com/categories/Tutorial/">Tutorial</category>
+      
+      
+      <category domain="https://v1siuol.com/tags/Python/">Python</category>
+      
+      <category domain="https://v1siuol.com/tags/Flask/">Flask</category>
+      
+      
+      <comments>https://v1siuol.com/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/#disqus_thread</comments>
       
     </item>
     

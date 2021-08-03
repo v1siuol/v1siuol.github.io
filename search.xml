@@ -1,6 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Flask Traditional Deployments: Zero to One &amp;lt;Setup a VPS&amp;gt;</title>
+    <url>/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/</url>
+    <content><![CDATA[<img src="/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/Flask_Traditional_Deployments_Zero_to_One_Setup_a_VPS_avatar.png">
+<blockquote>
+<p>The following article will introduce how to set up a <strong>virtual private server</strong>, and some basic <strong>Linux</strong> commands.</p>
+</blockquote>
+<span id="more"></span>
+<h2 id="Background">Background</h2>
+<ul>
+<li>A quite developed web project ( For Flask case, <code>flask run</code> listens <em>127.0.0.1:5000</em> by default, or <code>flask run --host 0.0.0.0</code> to listen all public IPs, like <em>a.b.c.d:5000</em>. Have fun with this first, then come and play with VPS! )</li>
+<li>This series is a supplement for <em>Tradition Deployments</em> in <em>Chapter 17. Deployment</em> in <em><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JlaWxseS5jb20vbGlicmFyeS92aWV3L2ZsYXNrLXdlYi1kZXZlbG9wbWVudC85NzgxNDkxOTkxNzI1Lw==">Flask Web Development, 2nd Edition<i class="fa fa-external-link-alt"></i></span></em> written by <em>Miguel Grinberg</em>.</li>
+<li><code>$ something</code> refers to commands in bash</li>
+</ul>
+<h2 id="0-How-to-Select-a-Virtual-Private-Server">0. How to Select a Virtual Private Server</h2>
+<table>
+<thead>
+<tr>
+<th>地区</th>
+<th>服务</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>国内</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly9jbG91ZC50ZW5jZW50LmNvbS8=">腾讯云<i class="fa fa-external-link-alt"></i></span></td>
+<td>需备案</td>
+</tr>
+<tr>
+<td>海外</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS8=">AWS<i class="fa fa-external-link-alt"></i></span></td>
+<td>国内的 AWS 由北京的光环新网运营</td>
+</tr>
+</tbody>
+</table>
+<p>以上是些主流的云服务器啦，贵贵的。</p>
+<p>I select AWS here since AWS provides a free tier for <strong>one</strong> year. For details, refer to <span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9mcmVlLw==">https://aws.amazon.com/free/<i class="fa fa-external-link-alt"></i></span>.</p>
+<p>AWS Free Tier includes 750 hours of <span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9lYzIv">Amazon Elastic Compute Cloud (EC2)<i class="fa fa-external-link-alt"></i></span> <strong>Linux</strong> t2.micro instance usage (1 GiB of memory and 32-bit and 64-bit platform support). Saying we can run 1 instance continuously for one month, or 2 instances at the same time continuously for half a month.</p>
+<p>It also includes 30 GB of <a href="https://aws.amazon.com/ebs/">Amazon Elastic Block <strong>Storage</strong> (EBS)</a> in any combination of General Purpose (SSD) or Magnetic, plus 2 million I/Os (with EBS Magnetic) and 1 GB of snapshot storage.</p>
+<h2 id="1-How-to-Create-the-Amazon-EC2">1. How to Create the Amazon EC2</h2>
+<p>Official documents: <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL0FXU0VDMi9sYXRlc3QvVXNlckd1aWRlL2dldC1zZXQtdXAtZm9yLWFtYXpvbi1lYzIuaHRtbA==">https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html<i class="fa fa-external-link-alt"></i></span></p>
+<p>Basic steps:</p>
+<ol>
+<li>Sign Up for AWS</li>
+<li>Create an IAM User</li>
+<li>Create a Key Pair</li>
+<li>Create a Virtual Private Cloud (VPC)</li>
+<li>Create a Security Group</li>
+</ol>
+<p>My VPC is like this:</p>
+<ol>
+<li>
+<p>AMI: Ubuntu Server 16.04 LTS (HVM), SSD Volume Type - ami-5e8bb23b</p>
+<p>Ubuntu Server 16.04 LTS (HVM), EBS General Purpose (SSD) Volume Type.</p>
+</li>
+<li>
+<p>Instance type: t2.micro (Variable ECUs, 1 vCPUs, 2.5 GHz, Intel Xeon Family, 1 GiB memory, EBS only)</p>
+</li>
+</ol>
+<h2 id="2-How-to-Connect-to-my-VPC">2. How to Connect to my VPC</h2>
+<p>Official documents: <span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL0FXU0VDMi9sYXRlc3QvVXNlckd1aWRlL0FjY2Vzc2luZ0luc3RhbmNlc0xpbnV4Lmh0bWw=">https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html<i class="fa fa-external-link-alt"></i></span></p>
+<p>Two commands using in my Mac terminal:</p>
+<ol>
+<li>
+<p><code>$ chmod 400 /path/my-key-pair.pem</code></p>
+<p>This is used to set the permissions of your private key file as read-only.</p>
+<p>The link to learn more on <code>chmod</code> : <span class="exturl" data-url="aHR0cHM6Ly9jaG1vZGNvbW1hbmQuY29tL2NobW9kLTQwMC8=">https://chmodcommand.com/chmod-400/<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li>
+<p><code>$ ssh -i /path/my-key-pair.pem user_name@public_dns_name</code></p>
+<p>Default <code>user_name</code> is like:</p>
+<ul>
+<li>For Amazon Linux 2 or the Amazon Linux AMI, the user name is <code>ec2-user</code>.</li>
+<li>For a Centos AMI, the user name is <code>centos</code>.</li>
+<li>For a Debian AMI, the user name is <code>admin</code> or <code>root</code>.</li>
+<li>For a Fedora AMI, the user name is <code>ec2-user</code> or <code>fedora</code>.</li>
+<li>For a RHEL AMI, the user name is <code>ec2-user</code> or <code>root</code>.</li>
+<li>For a SUSE AMI, the user name is <code>ec2-user</code> or <code>root</code>.</li>
+<li>For an Ubuntu AMI, the user name is <code>ubuntu</code>.</li>
+<li>Otherwise, if <code>ec2-user</code> and <code>root</code> don’t work, check with the AMI provider.</li>
+</ul>
+<p><code>public_dns_name</code> is like:<code>ec2-198-51-100-1.compute-1.amazonaws.com</code></p>
+</li>
+<li>
+<p>The updated version of my second command: <code>$ ssh -o TCPKeepAlive=yes -o ServerAliveInterval=60 -i /path/my-key-pair.pem user_name@public_dns_name</code></p>
+<p>In my practice, I usually encounter if I do nothing in the terminal for like 5 minutes.</p>
+<blockquote>
+<p>packet_write_wait: Connection to &lt;ip&gt; port 22: Broken pipe</p>
+</blockquote>
+<p>So I update the connection by sending the “HeartBeat” to the server to hold my connection.</p>
+</li>
+</ol>
+<h2 id="3-How-to-Close-my-VPC-Connection">3. How to Close my VPC Connection</h2>
+<p><code>$ logout</code> : then you will see <code>Connection to &lt;public_dns_name&gt; closed. </code> .</p>
+<h2 id="4-Optional-How-to-transfer-files-between-my-PC-and-EC2">4. (Optional) How to transfer files between my PC and EC2</h2>
+<ol>
+<li>
+<p>Send files from PC to EC2: PC --&gt; EC2</p>
+<p><code>$ scp -i /path/my-key-pair.pem /path/SampleFile.txt user_name@public_dns_name:/path</code></p>
+<p><code>/path</code> : my suggestion is to use <code>~</code> or <code>/tmp</code> . If sending to other paths in your EC2, it might say <code>permission denied</code> .</p>
+<p>So after scp the file to <code>/tmp</code> , <code>ssh</code> to your server and use command <code>mv /tmp/SamepleFile.txt /path/you_want</code> .</p>
+</li>
+<li>
+<p>Send files from EC2 to PC: EC2 --&gt; PC</p>
+<p><code>$ scp -i /path/my-key-pair.pem user_name@public_dns_name:/path_in_EC2/SampleFile.txt ~/path_on_PC</code></p>
+</li>
+</ol>
+<p>Thank you.</p>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《摆 烂》</title>
     <url>/%E3%80%8A%E6%91%86-%E7%83%82%E3%80%8B/</url>
     <content><![CDATA[<p>「正经人谁写<s>日记</s>博客啊」</p>
