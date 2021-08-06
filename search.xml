@@ -1,6 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Flask Traditional Deployments: Zero to One &amp;lt;Explore HTTPS&amp;gt;</title>
+    <url>/Flask-Traditional-Deployments-Zero-to-One-Explore-HTTPS/</url>
+    <content><![CDATA[<img src="/Flask-Traditional-Deployments-Zero-to-One-Explore-HTTPS/Flask_Traditional_Deployments_Zero_to_One_Explore_HTTPS_avatar.png">
+<blockquote>
+<p>The following article will introduce how to config HTTPS servers.</p>
+</blockquote>
+<span id="more"></span>
+<h2 id="Background">Background</h2>
+<ul>
+<li>This series is a supplyment for <em>Tradition Deploments</em> in <em>Chapter 17. Deployment</em> in <em><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JlaWxseS5jb20vbGlicmFyeS92aWV3L2ZsYXNrLXdlYi1kZXZlbG9wbWVudC85NzgxNDkxOTkxNzI1Lw==">Flask Web Development, 2nd Edition<i class="fa fa-external-link-alt"></i></span></em> written by <em>Miguel Grinberg</em>.</li>
+</ul>
+<h2 id="Steps">Steps</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install software-properties-common</span><br><span class="line">$ sudo add-apt-repository ppa:certbot/certbot</span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install certbot</span><br><span class="line"></span><br><span class="line">$ sudo certbot certonly --webroot -w /var/www/example -d example.com -d www.example.com</span><br></pre></td></tr></table></figure>
+<p><code>/var/www/example</code> should be the root path under <code>location ~ /.well-known</code> .</p>
+<p><code>example.com</code> and <code>www.example.com</code> should be your domain name.</p>
+<blockquote>
+<p>Saving debug log to /var/log/letsencrypt/letsencrypt.log<br>
+Plugins selected: Authenticator webroot, Installer None<br>
+Starting new HTTPS connection (1): <span class="exturl" data-url="aHR0cDovL2FjbWUtdjAyLmFwaS5sZXRzZW5jcnlwdC5vcmc=">acme-v02.api.letsencrypt.org<i class="fa fa-external-link-alt"></i></span><br>
+Obtaining a new certificate<br>
+Performing the following challenges:<br>
+http-01 challenge for <a href="http://v1siuol.com">v1siuol.com</a><br>
+http-01 challenge for <span class="exturl" data-url="aHR0cDovL3d3dy52MXNpdW9sLmNvbQ==">www.v1siuol.com<i class="fa fa-external-link-alt"></i></span><br>
+Using the webroot path /home/ubuntu/flask/v1siuol-site/veri for all unmatched domains.<br>
+Waiting for verification…<br>
+Cleaning up challenges<br>
+IMPORTANT NOTES:<br>
+- Congratulations! Your certificate and chain have been saved at:<br>
+/etc/letsencrypt/live/v1siuol.com/fullchain.pem<br>
+Your key file has been saved at:<br>
+/etc/letsencrypt/live/v1siuol.com/privkey.pem<br>
+Your cert will expire on 2018-11-17. To obtain a new or tweaked<br>
+version of this certificate in the future, simply run certbot<br>
+again. To non-interactively renew <em>all</em> of your certificates, run<br>
+“certbot renew”<br>
+- If you like Certbot, please consider supporting our work by:<br>
+Donating to ISRG / Let’s Encrypt:   <span class="exturl" data-url="aHR0cHM6Ly9sZXRzZW5jcnlwdC5vcmcvZG9uYXRl">https://letsencrypt.org/donate<i class="fa fa-external-link-alt"></i></span><br>
+Donating to EFF:                    <span class="exturl" data-url="aHR0cHM6Ly9lZmYub3JnL2RvbmF0ZS1sZQ==">https://eff.org/donate-le<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+<p>As mentioned, the pem files are stored at <code>/etc/letsencrypt/live/v1siuol.com/fullchain.pem</code> and <code>/etc/letsencrypt/live/v1siuol.com/privkey.pem</code> .</p>
+<p>Make SSL stronger</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ openssl dhparam -out /path/to/dhparam.pem 2048</span><br></pre></td></tr></table></figure>
+<p>Now, modify your Nginx config to fit into HTTPS.</p>
+<p>In <code>nginx_df</code> :</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">upstream uwsgicluster &#123;</span><br><span class="line">  server unix:&#x2F;&#x2F;&#x2F;home&#x2F;ubuntu&#x2F;flask&#x2F;v1siuol-site&#x2F;logs&#x2F;uwsgi.sock;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    server_name v1siuol.com</span><br><span class="line">                www.v1siuol.com</span><br><span class="line">                ;</span><br><span class="line">    charset       utf-8;</span><br><span class="line"></span><br><span class="line">    location ~ &#x2F;.well-known &#123;</span><br><span class="line">        root &#x2F;home&#x2F;ubuntu&#x2F;flask&#x2F;v1siuol-site&#x2F;veri;</span><br><span class="line">    &#125;</span><br><span class="line">    location &#x2F; &#123;</span><br><span class="line">        return 301 https:&#x2F;&#x2F;www.v1siuol.com$request_uri;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen  443 ssl;</span><br><span class="line">    server_name v1siuol.com</span><br><span class="line">                www.v1siuol.com</span><br><span class="line">                ;</span><br><span class="line"></span><br><span class="line">    charset       utf-8;</span><br><span class="line"></span><br><span class="line">    ssl_certificate &#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;v1siuol.com&#x2F;fullchain.pem;</span><br><span class="line">    ssl_certificate_key &#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;v1siuol.com&#x2F;privkey.pem;</span><br><span class="line">    ssl_dhparam &#x2F;home&#x2F;ubuntu&#x2F;flask&#x2F;v1siuol-site&#x2F;veri&#x2F;dhparam.pem;</span><br><span class="line"></span><br><span class="line">    # 减少点击劫持 Secure Nginx from Clickjacking  </span><br><span class="line">    add_header X-Frame-Options DENY;</span><br><span class="line">    # 禁止服务器自动解析资源类型 </span><br><span class="line">    # when serving user-supplied content, include a X-Content-Type-Options: nosniff header along with the Content-Type: header,</span><br><span class="line">    # to disable content-type sniffing on some browsers.</span><br><span class="line">    # https:&#x2F;&#x2F;www.owasp.org&#x2F;index.php&#x2F;List_of_useful_HTTP_headers</span><br><span class="line">    # currently suppoorted in IE &gt; 8 http:&#x2F;&#x2F;blogs.msdn.com&#x2F;b&#x2F;ie&#x2F;archive&#x2F;2008&#x2F;09&#x2F;02&#x2F;ie8-security-part-vi-beta-2-update.aspx</span><br><span class="line">    # http:&#x2F;&#x2F;msdn.microsoft.com&#x2F;en-us&#x2F;library&#x2F;ie&#x2F;gg622941(v&#x3D;vs.85).aspx</span><br><span class="line">    # &#39;soon&#39; on Firefox https:&#x2F;&#x2F;bugzilla.mozilla.org&#x2F;show_bug.cgi?id&#x3D;471020</span><br><span class="line">    add_header X-Content-Type-Options nosniff;</span><br><span class="line"></span><br><span class="line">    # 防XSS攻击</span><br><span class="line">    # This header enables the Cross-site scripting (XSS) filter built into most recent web browsers.</span><br><span class="line">    # It&#39;s usually enabled by default anyway, so the role of this header is to re-enable the filter for </span><br><span class="line">    # this particular website if it was disabled by the user.</span><br><span class="line">    # https:&#x2F;&#x2F;www.owasp.org&#x2F;index.php&#x2F;List_of_useful_HTTP_headers</span><br><span class="line">    add_header X-Xss-Protection 1;</span><br><span class="line"></span><br><span class="line">    ssl_ciphers &#39;ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:!DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA&#39;;</span><br><span class="line">    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    ssl_stapling on;</span><br><span class="line">    ssl_stapling_verify on;</span><br><span class="line"></span><br><span class="line">    ssl_session_timeout 1d;</span><br><span class="line">    ssl_session_cache shared:SSL:50m;</span><br><span class="line">    add_header Strict-Transport-Security max-age&#x3D;15768000;</span><br><span class="line">    keepalive_timeout    70;</span><br><span class="line"></span><br><span class="line">    root  &#x2F;home&#x2F;ubuntu&#x2F;react&#x2F;v1siuol-site-front-end&#x2F;build;</span><br><span class="line">    index index.html;</span><br><span class="line"></span><br><span class="line">    location &#x2F; &#123;</span><br><span class="line">        try_files $uri &#x2F;index.html;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location &#x2F;files &#123;</span><br><span class="line">        alias &#x2F;home&#x2F;ubuntu&#x2F;flask&#x2F;v1siuol-site&#x2F;app&#x2F;files;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location &#x2F;api &#123;</span><br><span class="line">        include      uwsgi_params;</span><br><span class="line">        uwsgi_pass   uwsgicluster;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Thank you.</p>
+<p>Reference:</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly91d3NnaS1kb2NzLnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9OZ2lueC5odG1s">https://uwsgi-docs.readthedocs.io/en/latest/Nginx.html<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9jZXJ0Ym90LmVmZi5vcmcv">https://certbot.eff.org/<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Flask Traditional Deployments: Zero to One &amp;lt;Setup a VPS&amp;gt;</title>
     <url>/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/</url>
     <content><![CDATA[<img src="/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/Flask_Traditional_Deployments_Zero_to_One_Setup_a_VPS_avatar.png">
