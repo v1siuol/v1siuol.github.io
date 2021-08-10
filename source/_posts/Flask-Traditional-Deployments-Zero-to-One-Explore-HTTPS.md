@@ -6,6 +6,7 @@ tags:
 categories:
   - - Tutorial
 date: 2018-08-17 00:00:00
+updated: 2018-08-17 00:00:00
 ---
 
 <img src="/Flask-Traditional-Deployments-Zero-to-One-Explore-HTTPS/Flask_Traditional_Deployments_Zero_to_One_Explore_HTTPS_avatar.png">

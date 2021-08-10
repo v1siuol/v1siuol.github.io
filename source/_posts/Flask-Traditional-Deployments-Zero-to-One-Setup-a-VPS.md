@@ -6,6 +6,7 @@ tags:
 categories:
   - [Tutorial]
 date: 2018-08-13 00:00:00
+updated: 2019-08-02 00:00:00
 ---
 
 <img src="/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/Flask_Traditional_Deployments_Zero_to_One_Setup_a_VPS_avatar.png">
