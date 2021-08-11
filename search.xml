@@ -62,6 +62,163 @@ Donating to EFF:                    <span class="exturl" data-url="aHR0cHM6Ly9lZ
       </tags>
   </entry>
   <entry>
+    <title>Flask Traditional Deployments: Zero to One &amp;lt;Flask Server&amp;gt;</title>
+    <url>/Flask-Traditional-Deployments-Zero-to-One-Flask-Server/</url>
+    <content><![CDATA[<img src="/Flask-Traditional-Deployments-Zero-to-One-Flask-Server/Flask_Traditional_Deployments_Zero_to_One_Flask_Server_avatar.png">
+<blockquote>
+<p>The following article will introduce how to set up your first <em>flask server</em> after logging in your server, and some basic <strong>linux</strong>, <strong>git</strong> commands.</p>
+</blockquote>
+<span id="more"></span>
+<p>[2021/08 更新] 这篇教程于 3 年前所写，大部分内容已没有参考意义，但值得一提的是，这记录了作者开发第一版博客时的心路历程 ^^</p>
+<h2 id="Background">Background</h2>
+<ul>
+<li>A quite developed web project ( For Flask case, <code>flask run</code> listens <em>127.0.0.1:5000</em> by default. However, <code>flask run --host 0.0.0.0</code> listens <em>a.b.c.d:5000</em>  under the same wifi. Have fun with it first, then come and playing with VPS! )</li>
+<li>This series is a supplyment for <em>Tradition Deploments</em> in <em>Chapter 17. Deployment</em> in <em><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JlaWxseS5jb20vbGlicmFyeS92aWV3L2ZsYXNrLXdlYi1kZXZlbG9wbWVudC85NzgxNDkxOTkxNzI1Lw==">Flask Web Development, 2nd Edition<i class="fa fa-external-link-alt"></i></span></em> written by <em>Miguel Grinberg</em>.</li>
+</ul>
+<h2 id="0-First-Impression-on-Ubuntu">0. First Impression on Ubuntu</h2>
+<img src="/Flask-Traditional-Deployments-Zero-to-One-Flask-Server/ubuntu_login.png">
+<p>Cong! You successfully login your virtual system.</p>
+<p>But just after that, following warning is expected to pop up:</p>
+<blockquote>
+<p>WARNING! Your environment specifies an invalid locale.<br>
+The unknown environment variables are:<br>
+LC_CTYPE=UTF-8 LC_ALL=<br>
+This can affect your user experience significantly, including the<br>
+ability to manage packages. You may install the locales by running:<br>
+sudo apt-get install language-pack-UTF-8<br>
+​     or<br>
+sudo locale-gen UTF-8<br>
+To see all available language packs, run:<br>
+apt-cache search “^language-pack-[a-z][a-z]$”<br>
+To disable this message for all users, run:<br>
+sudo touch /var/lib/cloud/instance/locale-check.skip</p>
+</blockquote>
+<p>Solution:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">export</span> LC_ALL=<span class="string">&quot;en_US.UTF-8&quot;</span></span><br><span class="line">$ <span class="built_in">export</span> LC_CTYPE=<span class="string">&quot;en_US.UTF-8&quot;</span></span><br><span class="line">$ sudo dpkg-reconfigure locales</span><br></pre></td></tr></table></figure>
+<p>Please do it, or you might encounter some weird issues below, like reporting</p>
+<blockquote>
+<p>The virtual environment was not created successfully because ensurepip is not<br>
+available.  On Debian/Ubuntu systems, you need to install the python3-venv<br>
+package using the following command.</p>
+</blockquote>
+<p>even though you might have already install <code>python3-venv</code>.</p>
+<p>Now try some commands like:</p>
+<ul>
+<li>
+<p><code>ls</code> : list directory contents</p>
+</li>
+<li>
+<p><code>pwd</code> : return working directory name</p>
+</li>
+<li>
+<p><code>man ls</code> : used to see <code>ls</code> manual pages</p>
+</li>
+<li>
+<p><code>cd</code> : change current directory</p>
+</li>
+<li>
+<p><code>mkdir</code> : make directories</p>
+</li>
+<li>
+<p><code>rm</code> : remove directory entries (be very very careful here)</p>
+<p>Tips: we can press <code>Tab</code> to automatically fillup the file name.</p>
+</li>
+</ul>
+<h2 id="1-Pull-Your-Project-Down-to-Your-Server">1. Pull Your Project Down to Your Server</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~  <span class="comment"># To my main directory </span></span><br><span class="line">$ mkdir flask  <span class="comment"># to make a folder for my project </span></span><br><span class="line">$ <span class="built_in">cd</span> flask/ </span><br><span class="line">$ sudo apt-get install python3-venv </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Issue: you might fail to install, reporting:</p>
+<blockquote>
+<p>E: Package ‘python3-venv’ has no installation candidate</p>
+</blockquote>
+<p>Solution:<br>
+<code>$ sudo apt-get update </code><br>
+Then install it again!</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install python3-pip </span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/v1siuol/v1siuol-site.git </span><br><span class="line">$ <span class="built_in">cd</span> v1siuol-site/ </span><br><span class="line">$ python3 -m venv venv </span><br><span class="line">$ pip install --upgrade pip</span><br><span class="line">$ <span class="built_in">source</span> venv/bin/activate</span><br><span class="line">(venv)$ pip install -r requirements.txt </span><br><span class="line">(venv)$ mv templates.env .env </span><br><span class="line">(venv)$ vim .env  <span class="comment"># Complete the config </span></span><br><span class="line">(venv)$ deactivate  <span class="comment"># Exit the venv</span></span><br></pre></td></tr></table></figure>
+<p>Now the flask project is almost ready to go. But one more thing left behind: <strong>Setup the database</strong>.</p>
+<h3 id="2-MySQL-on-Ubuntu">2. MySQL on Ubuntu</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install mysql-server</span><br><span class="line">$ mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p>You need to do some selections in the last step and MySQL should be installed successfully in your server. Check by:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ systemctl status mysql.service</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>● mysql.service - MySQL Community Server<br>
+Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)<br>
+Active: active (running) since Tue 2018-08-14 07:01:00 UTC; 8min ago<br>
+Main PID: 15973 (mysqld)<br>
+CGroup: /system.slice/mysql.service<br>
+​                  └─15973 /usr/sbin/mysqld<br>
+Aug 14 07:00:59 ip-172-31-16-238 systemd[1]: Starting MySQL Community Server…<br>
+Aug 14 07:01:00 ip-172-31-16-238 systemd[1]: Started MySQL Community Server.</p>
+</blockquote>
+<p>Next, we will create the database for my flask project.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mysql -u root -p  <span class="comment"># Enter the password you set a few minutes ago</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Welcome to the MySQL monitor.  Commands end with ; or \g.<br>
+Your MySQL connection id is 6<br>
+Server version: 5.7.23-0ubuntu0.16.04.1 (Ubuntu)<br>
+Copyright © 2000, 2018, Oracle and/or its affiliates. All rights reserved.<br>
+Oracle is a registered trademark of Oracle Corporation and/or its<br>
+affiliates. Other names may be trademarks of their respective<br>
+owners.<br>
+Type ‘help;’ or ‘\h’ for help. Type ‘\c’ to clear the current input statement.</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(mysql) &gt; SHOW databases;</span><br><span class="line">(mysql) &gt; CREATE database IF NOT EXISTS v1siuol_site DEFAULT CHARSET utf8;</span><br><span class="line">(mysql) &gt; QUIT;</span><br></pre></td></tr></table></figure>
+<h2 id="3-Do-something-Fun">3. Do something Fun</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ flask run</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Traceback (most recent call last):<br>
+File “/home/ubuntu/flask/v1siuol-site/venv/bin/flask”, line 11, in <module><br>
+​    sys.exit(main())<br>
+File “/home/ubuntu/flask/v1siuol-site/venv/lib/python3.5/site-packages/flask/cli.py”, line 894, in main<br>
+​    cli.main(args=args, prog_name=name)<br>
+File “/home/ubuntu/flask/v1siuol-site/venv/lib/python3.5/site-packages/flask/cli.py”, line 557, in main<br>
+​    return super(FlaskGroup, self).main(*args, **kwargs)<br>
+File “/home/ubuntu/flask/v1siuol-site/venv/lib/python3.5/site-packages/click/core.py”, line 676, in main<br>
+​    _verify_python3_env()<br>
+File “/home/ubuntu/flask/v1siuol-site/venv/lib/python3.5/site-packages/click/_unicodefun.py”, line 118, in _verify_python3_env<br>
+​    ‘for mitigation steps.’ + extra)<br>
+RuntimeError: Click will abort further execution because Python 3 was configured to use ASCII as encoding for the environment.  Consult <span class="exturl" data-url="aHR0cDovL2NsaWNrLnBvY29vLm9yZy9weXRob24zL2Zvcg==">http://click.pocoo.org/python3/for<i class="fa fa-external-link-alt"></i></span> mitigation steps.<br>
+This system supports the C.UTF-8 locale which is recommended.<br>
+You might be able to resolve your issue by exporting the<br>
+following environment variables:<br>
+export LC_ALL=C.UTF-8<br>
+export LANG=C.UTF-8<br>
+Click discovered that you exported a UTF-8 locale<br>
+but the locale system could not pick up from it because<br>
+it does not exist.  The exported locale is “en_US.UTF-8” but it<br>
+is not supported</p>
+</blockquote>
+<p>Sign :( So we add <code>export LC_ALL=C.UTF-8</code> <code>export LANG=C.UTF-8</code> to <code>.env</code> .</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ flask deploy</span><br><span class="line">(venv)$ flask run --host 0.0.0.0</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>Serving Flask app “<span class="exturl" data-url="aHR0cDovL3Yxc2l1b2wucHk=">v1siuol.py<i class="fa fa-external-link-alt"></i></span>”</li>
+<li>Environment: production<br>
+WARNING: Do not use the development server in a production environment.<br>
+Use a production WSGI server instead.</li>
+<li>Debug mode: off</li>
+<li>Running on <span class="exturl" data-url="aHR0cDovLzAuMC4wLjA6NTAwMC8=">http://0.0.0.0:5000/<i class="fa fa-external-link-alt"></i></span> (Press CTRL+C to quit)</li>
+</ul>
+</blockquote>
+<p>NOW turn up your brower, type your <code>&lt;public IP&gt;:5000</code> as url.</p>
+<blockquote>
+<p>&lt;public IP&gt; can be found in your console:<br>
+<img src="/Flask-Traditional-Deployments-Zero-to-One-Flask-Server/aws_public_ip.png"></p>
+</blockquote>
+<p>WOW!!</p>
+<img src="/Flask-Traditional-Deployments-Zero-to-One-Flask-Server/flask_own_server.png">
+<p>Thank you.</p>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Flask Traditional Deployments: Zero to One &amp;lt;Setup a VPS&amp;gt;</title>
     <url>/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/</url>
     <content><![CDATA[<img src="/Flask-Traditional-Deployments-Zero-to-One-Setup-a-VPS/Flask_Traditional_Deployments_Zero_to_One_Setup_a_VPS_avatar.png">
