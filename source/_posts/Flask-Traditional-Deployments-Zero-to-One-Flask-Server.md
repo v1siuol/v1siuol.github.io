@@ -9,7 +9,6 @@ date: 2018-08-14 00:00:00
 updated: 2021-08-06 00:00:00
 ---
 
-
 <img src="/Flask-Traditional-Deployments-Zero-to-One-Flask-Server/Flask_Traditional_Deployments_Zero_to_One_Flask_Server_avatar.png">
 
 > The following article will introduce how to set up your first *flask server* after logging in your server, and some basic **linux**, **git** commands. 
