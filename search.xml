@@ -1,6 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Flask Traditional Deployments: Zero to One &amp;lt;Deploy uWSGI&amp;gt;</title>
+    <url>/Flask-Traditional-Deployments-Zero-to-One-Deploy-uWSGI/</url>
+    <content><![CDATA[<img src="/Flask-Traditional-Deployments-Zero-to-One-Deploy-uWSGI/Flask_Traditional_Deployments_Zero_to_One_Deploy_uWSGI_avatar.png">
+<blockquote>
+<p>The following article will introduce how to install a production-ready web server.</p>
+</blockquote>
+<span id="more"></span>
+<h2 id="Background">Background</h2>
+<ul>
+<li>A quite developed web project ( For Flask case, <code>flask run</code> listens <em>127.0.0.1:5000</em> by default. However, <code>flask run --host 0.0.0.0</code> listens <em>a.b.c.d:5000</em>  under the same wifi. Have fun with it first, then come and playing with VPS! )</li>
+<li>This series is a supplyment for <em>Tradition Deploments</em> in <em>Chapter 17. Deployment</em> in <em><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JlaWxseS5jb20vbGlicmFyeS92aWV3L2ZsYXNrLXdlYi1kZXZlbG9wbWVudC85NzgxNDkxOTkxNzI1Lw==">Flask Web Development, 2nd Edition<i class="fa fa-external-link-alt"></i></span></em> written by <em>Miguel Grinberg</em>.</li>
+</ul>
+<h2 id="0-Try-uWSGI">0. Try uWSGI</h2>
+<p>Official documents: <span class="exturl" data-url="aHR0cHM6Ly91d3NnaS1kb2NzLnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9XU0dJcXVpY2tzdGFydC5odG1s">https://uwsgi-docs.readthedocs.io/en/latest/WSGIquickstart.html<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ uwsgi --http 127.0.0.1:3031 --wsgi-file v1siuol.py --callable app --processes 4 --threads 2 --stats 127.0.0.1:9191</span><br></pre></td></tr></table></figure>
+<p>We choose <code>--http</code> instead of <code>--socket</code> since we will use <code>uwsgitop</code> later to determine how many processes and thread  are <em>optimal</em>.</p>
+<blockquote>
+<p>There is no magic rule for setting the number of processes or threads to use. It is very much application and system dependent. Simple math like <code>processes = 2 * cpucores</code> will not be enough. You need to experiment with various setups and be prepared to constantly monitor your apps. <code>uwsgitop</code> could be a great tool to find the best values.</p>
+<p>Reference: <span class="exturl" data-url="aHR0cHM6Ly91d3NnaS1kb2NzLnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9UaGluZ3NUb0tub3cuaHRtbA==">https://uwsgi-docs.readthedocs.io/en/latest/ThingsToKnow.html<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+<p>Running the above line, we are expecting to see something like:</p>
+<img src="/Flask-Traditional-Deployments-Zero-to-One-Deploy-uWSGI/uwsgi_running.png">
+<h2 id="1-Config-uWSGI">1. Config uWSGI</h2>
+<p>Keep uWSGI running, we now open another terminal, logging in the server via ssh.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># After login, new ssh connection</span></span><br><span class="line">$ <span class="built_in">cd</span> flask/</span><br><span class="line">$ <span class="built_in">cd</span> v1siuol-site/</span><br><span class="line">$ <span class="built_in">source</span> venv/bin/activate</span><br><span class="line">(venv)$ uwsgitop :9191</span><br></pre></td></tr></table></figure>
+<p>The port uwsgitop listen to should be the same as the port uWSGI put the stat in.</p>
+<img src="/Flask-Traditional-Deployments-Zero-to-One-Deploy-uWSGI/uwsgtop_start_moniter.png">
+<p>Since uwsgi and uwsgitop are ocupying two terminals, we open the third terminal to simulate the regular access to our flask website.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># After login, another new ssh connection</span></span><br><span class="line">$ curl -v localhost:3031  <span class="comment"># You may repeat it, but this only accesses index page</span></span><br></pre></td></tr></table></figure>
+<p>Meanwhile, CHECK your uwsgitop window.</p>
+<img src="/Flask-Traditional-Deployments-Zero-to-One-Deploy-uWSGI/uwsgitop_on.png">
+<p>See! Here we moniter the reaction under 4 processes, each with 2 threads. Obviously, we don’t need that much (though we only consider one connection cases).</p>
+<p>Try a few times and find the best values. THEN we shall move to the next step, configing uWSGI in a more proper way.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ sudo mkdir /etc/uwsgi</span><br><span class="line">(venv)$ sudo chmod 777 /etc/uwsgi </span><br><span class="line">(venv)$ touch /etc/uwsgi/emperor.ini</span><br><span class="line">(venv)$ vim /etc/uwsgi/emperor.ini</span><br></pre></td></tr></table></figure>
+<h3 id="emperor-ini">&gt; [ emperor.ini ]</h3>
+<p>In <code>emperor.ini</code> :</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[uwsgi]</span><br><span class="line">emperor = /etc/uwsgi/vassals</span><br><span class="line">uid = 1000</span><br><span class="line">gid = 1000</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ sudo touch /etc/systemd/system/uwsgi_v1siuol.service </span><br><span class="line">(venv)$ chmod 777  /etc/systemd/system/uwsgi_v1siuol.service</span><br><span class="line">(venv)$ vim /etc/systemd/system/uwsgi_v1siuol.service</span><br></pre></td></tr></table></figure>
+<h3 id="uwsgi-v1siuol-service">&gt; [ uwsgi_v1siuol.service ]</h3>
+<p>In <code>uwsgi_v1siuol.service</code> :</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=uWSGI instance to serve flask</span><br><span class="line">After=syslog.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini /etc/uwsgi/emperor.ini</span><br><span class="line"><span class="comment"># Requires systemd version 211 or newer</span></span><br><span class="line">RuntimeDirectory=uwsgi</span><br><span class="line">Restart=always</span><br><span class="line">KillSignal=SIGQUIT</span><br><span class="line">Type=notify</span><br><span class="line">NotifyAccess=all</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ sudo systemctl start uwsgi_v1siuol.service</span><br><span class="line">(venv)$ systemctl status uwsgi_v1siuol.service  <span class="comment"># check if active</span></span><br></pre></td></tr></table></figure>
+<p>We are almost there, but one vassal left.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ sudo systemctl stop uwsgi_v1siuol.service</span><br><span class="line">(venv)$ touch /etc/uwsgi/vassals/uwsgiconfig.ini</span><br></pre></td></tr></table></figure>
+<h3 id="uwsgiconfig-ini">&gt; [ uwsgiconfig.ini ]</h3>
+<p>In <code>uwsgiconfig.ini</code> :</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[uwsgi]</span><br><span class="line"></span><br><span class="line"><span class="built_in">chdir</span> = /home/ubuntu/flask/v1siuol-site</span><br><span class="line"></span><br><span class="line">socket = /home/ubuntu/flask/v1siuol-site/logs/uwsgi.sock</span><br><span class="line">chmod-socket = 666</span><br><span class="line">stats = /home/ubuntu/flask/v1siuol-site/logs/uwsgi_stat.sock</span><br><span class="line"></span><br><span class="line">wsgi-file = v1siuol.py</span><br><span class="line">callable = app</span><br><span class="line"></span><br><span class="line">logto = /home/ubuntu/flask/v1siuol-site/logs/uwsgi.log</span><br></pre></td></tr></table></figure>
+<p>Try again!</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ sudo systemctl start uwsgi_v1siuol.service</span><br><span class="line">(venv)$ ps aux | grep uwsgi</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ubuntu   23216  0.0  0.4  34696  4252 ?        Ss   13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini /etc/uwsgi/emperor.ini<br>
+ubuntu   23218  0.4  6.1 144172 62620 ?        S    13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23222  0.0  5.3 144172 54456 ?        S    13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23236  0.0  0.1  12916  1084 pts/1    S+   13:55   0:00 grep --color=auto uwsgi</p>
+</blockquote>
+<p>Great! We finally daemonize uWSGI. BUT plz never ever daemonize the Emperor unless you know what you are doing!!!</p>
+<h2 id="2-Kill-uWSGI">2. Kill uWSGI</h2>
+<p>Now you can do something really fun.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ ps aux | grep uwsgi</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ubuntu   23216  0.0  0.4  34696  4252 ?        Ss   13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini /etc/uwsgi/emperor.ini<br>
+ubuntu   23218  0.0  6.1 144172 62620 ?        S    13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23222  0.0  5.3 144172 54456 ?        S    13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23368  0.0  0.0  12916   932 pts/1    S+   15:31   0:00 grep --color=auto uwsgi</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ <span class="built_in">kill</span> -INT 23222</span><br><span class="line">(venv)$ ps aux | grep uwsgi</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ubuntu   23216  0.0  0.4  34696  4252 ?        Ss   13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini /etc/uwsgi/emperor.ini<br>
+ubuntu   23218  0.0  6.1 144172 62620 ?        S    13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23382  0.0  5.3 144172 54456 ?        S    15:40   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23384  0.0  0.1  12916  1016 pts/1    S+   15:40   0:00 grep --color=auto uwsgi</p>
+</blockquote>
+<p>Can you tell the difference of the <strong>starting time</strong> and <strong>pid</strong> between processes?</p>
+<p>pid: 23382 is reloaded!!!</p>
+<p>Try to kill another one.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(venv)$ <span class="built_in">kill</span> -INT 23218</span><br><span class="line">(venv)$ ps aux | grep uwsgi</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ubuntu   23216  0.0  0.4  34664  4264 ?        Ss   13:53   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini /etc/uwsgi/emperor.ini<br>
+ubuntu   23389 65.0  6.1 144188 62760 ?        S    15:40   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23392  0.0  5.3 144188 54372 ?        S    15:40   0:00 /home/ubuntu/flask/v1siuol-site/venv/bin/uwsgi --ini uwsgiconfig.ini<br>
+ubuntu   23394  0.0  0.1  12916  1088 pts/1    S+   15:40   0:00 grep --color=auto uwsgi</p>
+</blockquote>
+<p>Surprise! They all being reloaded!</p>
+<h2 id="3-Conclusion">3. Conclusion</h2>
+<p>For editing files reference:</p>
+<p><code>/etc/uwsgi/emperor.ini</code></p>
+<p><code>/etc/uwsgi/vassals/uwsgiconfig.ini</code></p>
+<p><code>/etc/systemd/system/uwsgi_v1siuol.service</code></p>
+<p>For log files reference:</p>
+<p><code>/home/ubuntu/flask/v1siuol-site/logs/uwsgi.log</code></p>
+<p><code>/home/ubuntu/flask/v1siuol-site/logs/uwsgi.sock</code></p>
+<p><code>/home/ubuntu/flask/v1siuol-site/logs/uwsgi_stat.sock</code></p>
+<p>Thank you.</p>
+<p>References:</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly91d3NnaS1kb2NzLnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9TeXN0ZW1kLmh0bWw=">https://uwsgi-docs.readthedocs.io/en/latest/Systemd.html<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly91d3NnaS1kb2NzLnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9FbXBlcm9yLmh0bWw=">https://uwsgi-docs.readthedocs.io/en/latest/Emperor.html<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Flask Traditional Deployments: Zero to One &amp;lt;Explore HTTPS&amp;gt;</title>
     <url>/Flask-Traditional-Deployments-Zero-to-One-Explore-HTTPS/</url>
     <content><![CDATA[<img src="/Flask-Traditional-Deployments-Zero-to-One-Explore-HTTPS/Flask_Traditional_Deployments_Zero_to_One_Explore_HTTPS_avatar.png">
